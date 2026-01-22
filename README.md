@@ -19,8 +19,12 @@ A simple Android calculator built with Android Studio and Kotlin.
 4. Create or select a device:
    - Click the device dropdown and choose an emulator, **or**
    - Click **Device Manager** to create a new virtual device.
-5. Click the green **Run** ▶️ button, choose the `app` configuration if prompted.
-6. The app will build and install on the selected device.
+5. Set up the Run/Debug configuration if prompted:
+   - Click the configuration dropdown and select **app**.
+   - If **app** is missing, click **Edit Configurations...** and add an **Android App** config.
+   - Select the **app** module, then click **Apply** and **OK**.
+6. Click the green **Run** ▶️ button.
+7. The app will build and install on the selected device.
 
 ## Usage
 - Enter expressions using the on-screen buttons.
