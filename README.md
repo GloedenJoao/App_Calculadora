@@ -12,6 +12,16 @@ A simple Android calculator built with Android Studio and Kotlin.
 2. Let Gradle sync dependencies.
 3. Run the app on an emulator or physical device.
 
+## Run in Android Studio (Step by Step)
+1. Launch Android Studio.
+2. Click **File > Open...** and select the project root folder (`App_Calculadora`).
+3. Wait for **Gradle Sync** to complete (Android Studio will prompt you if needed).
+4. Create or select a device:
+   - Click the device dropdown and choose an emulator, **or**
+   - Click **Device Manager** to create a new virtual device.
+5. Click the green **Run** ▶️ button, choose the `app` configuration if prompted.
+6. The app will build and install on the selected device.
+
 ## Usage
 - Enter expressions using the on-screen buttons.
 - Use parentheses to control precedence.
