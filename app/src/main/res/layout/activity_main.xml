@@ -5,14 +5,16 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textExpression"
+    <EditText
+        android:id="@+id/editExpression"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
+        android:inputType="text"
+        android:hint="@string/expression_hint"
         android:padding="8dp"
-        android:text="@string/expression_hint"
-        android:textSize="28sp" />
+        android:textSize="28sp"
+        android:maxLines="1" />
 
     <TextView
         android:id="@+id/textResult"

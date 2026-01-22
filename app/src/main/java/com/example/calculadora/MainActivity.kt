@@ -1,22 +1,35 @@
 package com.example.calculadora
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var expressionView: TextView
+    private lateinit var expressionView: EditText
     private lateinit var resultView: TextView
     private var expressionText: String = ""
     private var lastAnswer: Double = 0.0
+    private var isUpdatingExpression = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        expressionView = findViewById(R.id.textExpression)
+        expressionView = findViewById(R.id.editExpression)
         resultView = findViewById(R.id.textResult)
+        expressionView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!isUpdatingExpression) {
+                    expressionText = s?.toString().orEmpty()
+                }
+            }
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
 
         val buttonMap = mapOf(
             R.id.button0 to "0",
@@ -79,11 +92,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateExpression() {
-        expressionView.text = if (expressionText.isEmpty()) {
-            getString(R.string.expression_hint)
-        } else {
-            expressionText
+        isUpdatingExpression = true
+        expressionView.setText(expressionText)
+        if (expressionText.isNotEmpty()) {
+            expressionView.setSelection(expressionText.length)
         }
+        isUpdatingExpression = false
     }
 
     private fun updateResult(text: String) {
