@@ -95,7 +95,7 @@ object ExpressionEvaluator {
                 TokenType.NUMBER -> output.add(token)
                 TokenType.OPERATOR -> {
                     while (operators.isNotEmpty()) {
-                        val top = operators.peek()
+                        val top = operators.last()
                         if (top.type != TokenType.OPERATOR) {
                             break
                         }
@@ -103,28 +103,28 @@ object ExpressionEvaluator {
                         val topPrec = precedence(top.text)
                         val isLeftAssoc = isLeftAssociative(token.text)
                         if ((isLeftAssoc && tokenPrec <= topPrec) || (!isLeftAssoc && tokenPrec < topPrec)) {
-                            output.add(operators.pop())
+                            output.add(operators.removeLast())
                         } else {
                             break
                         }
                     }
-                    operators.push(token)
+                    operators.addLast(token)
                 }
-                TokenType.LEFT_PAREN -> operators.push(token)
+                TokenType.LEFT_PAREN -> operators.addLast(token)
                 TokenType.RIGHT_PAREN -> {
-                    while (operators.isNotEmpty() && operators.peek().type != TokenType.LEFT_PAREN) {
-                        output.add(operators.pop())
+                    while (operators.isNotEmpty() && operators.last().type != TokenType.LEFT_PAREN) {
+                        output.add(operators.removeLast())
                     }
-                    if (operators.isEmpty() || operators.peek().type != TokenType.LEFT_PAREN) {
+                    if (operators.isEmpty() || operators.last().type != TokenType.LEFT_PAREN) {
                         throw IllegalArgumentException("Mismatched parentheses")
                     }
-                    operators.pop()
+                    operators.removeLast()
                 }
             }
         }
 
         while (operators.isNotEmpty()) {
-            val token = operators.pop()
+            val token = operators.removeLast()
             if (token.type == TokenType.LEFT_PAREN || token.type == TokenType.RIGHT_PAREN) {
                 throw IllegalArgumentException("Mismatched parentheses")
             }
@@ -139,14 +139,14 @@ object ExpressionEvaluator {
 
         for (token in tokens) {
             when (token.type) {
-                TokenType.NUMBER -> stack.push(token.number ?: 0.0)
+                TokenType.NUMBER -> stack.addLast(token.number ?: 0.0)
                 TokenType.OPERATOR -> {
                     if (token.text == "u-") {
-                        val value = stack.removeFirstOrNull() ?: throw IllegalArgumentException("Missing operand")
-                        stack.push(-value)
+                        val value = popNumber(stack)
+                        stack.addLast(-value)
                     } else {
-                        val right = stack.removeFirstOrNull() ?: throw IllegalArgumentException("Missing operand")
-                        val left = stack.removeFirstOrNull() ?: throw IllegalArgumentException("Missing operand")
+                        val right = popNumber(stack)
+                        val left = popNumber(stack)
                         val result = when (token.text) {
                             "+" -> left + right
                             "-" -> left - right
@@ -154,14 +154,18 @@ object ExpressionEvaluator {
                             "/" -> left / right
                             else -> throw IllegalArgumentException("Unknown operator")
                         }
-                        stack.push(result)
+                        stack.addLast(result)
                     }
                 }
                 else -> throw IllegalArgumentException("Unexpected token")
             }
         }
 
-        return stack.removeFirstOrNull() ?: throw IllegalArgumentException("Empty expression")
+        return if (stack.isEmpty()) {
+            throw IllegalArgumentException("Empty expression")
+        } else {
+            stack.removeLast()
+        }
     }
 
     private fun precedence(operator: String): Int = when (operator) {
@@ -179,5 +183,12 @@ object ExpressionEvaluator {
         '×', '*' -> "*"
         '÷', '/' -> "/"
         else -> char.toString()
+    }
+
+    private fun popNumber(stack: ArrayDeque<Double>): Double {
+        if (stack.isEmpty()) {
+            throw IllegalArgumentException("Missing operand")
+        }
+        return stack.removeLast()
     }
 }
