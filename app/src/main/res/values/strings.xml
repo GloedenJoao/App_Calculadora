@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Calculadora</string>
+    <string name="expression_hint">0</string>
+    <string name="result_prefix">=</string>
+</resources>
